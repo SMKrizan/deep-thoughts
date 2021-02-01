@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 
 // imports Apollo server
 const { ApolloServer } = require('apollo-server-express');
@@ -27,6 +28,16 @@ server.applyMiddleware({ app });
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+// serves static assets
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+}
+
+// responds with production-ready React front-end code for GET request made to any location on server without explicit route defined
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+})
 
 db.once('open', () => {
   app.listen(PORT, () => {
