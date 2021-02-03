@@ -40,7 +40,7 @@ const Profile = () => {
             friends={user.friends}
           />
         </div>
-      </div>
+        </div>
     </div>
   );
 };

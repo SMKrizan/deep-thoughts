@@ -14,7 +14,7 @@ const SingleThought = props => {
 
   // 'loading' (shows whether data is loading) and 'data' (populates data result) are destructured from 'useQuery' hook
   const { loading, data } = useQuery(QUERY_THOUGHT, {
-    // this 2nd argument-object passes needed variables to queries that require them
+    // this 2nd argument-object passes variables to queries that require them
     variables: { id: thoughtId }
   });
 
