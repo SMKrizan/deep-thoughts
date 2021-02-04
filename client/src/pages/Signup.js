@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { ADD_USER } from '../utils/mutations';
+import Auth from '../utils/auth';
 
 const Signup = () => {
   const [formState, setFormState] = useState({ username: '', email: '', password: '' });
@@ -23,6 +24,7 @@ const Signup = () => {
     event.preventDefault();
 
     // uses try/catch which is useful w/ async promises (e.g. async/await vs .then(), .catch()...)
+    // takes token and sets it to localStorage
     try {
       // executes 'addUser' mutation fn and passes in form-data variables
       const { data } = await addUser({
@@ -30,8 +32,7 @@ const Signup = () => {
         variables: { ...formState }
       });
       // 
-      console.log(data);
-      // 
+      Auth.login(data.addUser.token);
     } catch (e) {
       console.error(e);
     }

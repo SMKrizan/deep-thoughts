@@ -59,3 +59,46 @@ export const QUERY_USER = gql`
         }
     }
 `;
+// provides info for user's profile page; syntax here is different than other queries as there are no variables being passed, it simply retrieves all data related to the logged-in user
+export const QUERY_ME = gql`
+    {
+        me {
+            _id
+            username
+            email
+            friendCount
+            thoughts {
+                _id
+                thoughtText
+                createdAt
+                reactionCount
+                reactions {
+                    _id
+                    createdAt
+                    reactionBody
+                    username
+                }
+            }
+            friends {
+                _id
+                username
+            }
+        }
+    }
+`;
+
+// provides data for user's home page
+export const QUERY_ME_BASIC = gql`
+{
+    me {
+        _id
+        username
+        email
+        friendCount
+        friends {
+            _id
+            username
+        }
+    }
+}
+`;

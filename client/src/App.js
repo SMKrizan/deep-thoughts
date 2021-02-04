@@ -17,8 +17,18 @@ import Footer from './components/Footer';
 
 import Home from './pages/Home';
 
-// constructor fn establishes connection to GraphQL server using Apollo; 'uniform resource identifier' with relative path-value uses 'proxy' property added to package.json to prefix all HTTP requests so that this front-end server setup will work in both development and production environments 
+// constructor fn establishes connection to GraphQL server using Apollo; 'uniform resource identifier' with relative path-value uses 'proxy' property added to package.json to prefix all HTTP requests so that this front-end server setup will work in both development and production environments
 const client = new ApolloClient({
+  // retrieves token from localStorage before each request
+  request: operation => {
+    const token = localStorage.getItem('id_token');
+    // uses 'setContext()' method to set HTTP request headers of every request to include token, whether needed or not: if request does not require token, server-side resolver fn will not check for it
+    operation.setContext({
+      headers: {
+        authorization: token ? `Bearer ${token}` : ''
+      }
+    });
+  },
   uri: '/graphql'
 });
 

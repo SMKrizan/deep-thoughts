@@ -1,30 +1,46 @@
 import React from 'react';
 // enables application of hook to retrieve values from URL
-import { useParams } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 import ThoughtList from '../components/ThoughtList';
 import FriendList from '../components/FriendList';
 import { useQuery } from '@apollo/react-hooks';
-import { QUERY_USER } from '../utils/queries';
+import { QUERY_USER, QUERY_ME } from '../utils/queries';
+import Auth from '../utils/auth';
 
 
 const Profile = () => {
   const { username: userParam } = useParams();
 
-  const { loading, data } = useQuery(QUERY_USER, {
+  // if 'userParam' is holding a value from the URL it will be used to run 'QUERY_USER', otherwise 'QUERY_ME'
+  const { loading, data } = useQuery(userParam ? QUERY_USER : QUERY_ME, {
     variables: { username: userParam }
   });
 
-  const user = data?.user || {};
+  // checks whether user is loggedIn, if so redirects to user's profile page if username = loggedIn user
+  if (Auth.loggedIn() && Auth.getProfile().data.username === userParam) {
+    return <Redirect to='/profile' />;
+  }  
+  
+  const user = data?.me || data?.user || {};
 
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  // if user navigates to profile when not logged in, message displays letting user know they are not logged in 
+  if (!user?.username) {
+    return (
+      <h4>
+        You need to be logged in to see this page. Use the navigation links above to sign up or log in!
+      </h4>
+    );
   }
 
   return (
     <div>
       <div className="flex-row mb-3">
         <h2 className="bg-dark text-secondary p-3 display-inline-block">
-        Viewing {user.username}'s profile.
+        Viewing {userParam ? `${user.username}'s` : 'your'} profile.
         </h2>
       </div>
 
